@@ -25,7 +25,7 @@ jobs:
       - name: Source exports workaround
         run: |
           while read line; do
-            echo "$line" >> $GITHUB_ENV
+            echo $line >> $GITHUB_ENV
           done < exports.sh
           rm exports.sh
       
