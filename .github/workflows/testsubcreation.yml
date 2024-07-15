@@ -1,6 +1,7 @@
 name: Process ENV and Run Terraform
 
 on: 
+  workflow_dispatch: 
   push:
     paths:
       - 'env-files/**'
@@ -43,7 +44,7 @@ jobs:
       - name: Checkout Terraform Code Repository
         uses: actions/checkout@v4
         with:
-          repository: 'testSubAction-Code'
+          repository: 'Semal31/testSubAction-Code'
           path: 'testSubAction-Code'
 
       - name: Set up Terraform
