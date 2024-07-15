@@ -1,0 +1,70 @@
+name: Process ENV and Run Terraform
+
+on: 
+  push:
+    paths:
+      - 'env-files/**'
+
+jobs:
+  process-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Execute Python script and capture outputs
+        run: |
+          python ./output_exports.py > exports.sh
+      
+      - name: Source exports workaround
+        run: |
+          while read line; do
+            echo "$line" >> $GITHUB_ENV
+          done < exports.sh
+          rm exports.sh
+      
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Extract Azure Credentials for Terraform
+        run: |
+          echo "ARM_CLIENT_ID=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.clientId')" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.clientSecret')" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.subscriptionId')" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(echo ${{ secrets.AZURE_CREDENTIALS }} | jq -r '.tenantId')" >> $GITHUB_ENV
+        shell: bash
+      
+      - name: Checkout Terraform Code Repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'testSubAction-Code'
+          path: 'testSubAction-Code'
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 'latest'
+      
+      - name: Terraform Init and Apply (pre)
+        run: |
+          terraform -chdir=../testSubAction-Code/pre init -backend-config="key=SubscriptionCreation/${{ env.TF_VAR_resource_group_name }}/pre/terraform.tfstate"
+          terraform -chdir=../testSubAction-Code/pre apply -auto-approve
+      
+      - name: Terraform Init and Apply (post)
+        run: |
+          terraform -chdir=../testSubAction-Code/post init -backend-config="key=SubscriptionCreation/${{ env.TF_VAR_resource_group_name }}/post/terraform.tfstate"
+          terraform -chdir=../testSubAction-Code/post apply -auto-approve
+      
+      - name: Mark env file as processed
+        run: |
+          python ./output_exports.py True
