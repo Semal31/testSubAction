@@ -33,9 +33,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Install jq
-        run: sudo apt-get install jq
-
       - name: Extract Azure Credentials for Terraform
         run: |
           echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
