@@ -48,7 +48,7 @@ def main():
                     key, value = line.split(':', 1)
                     key = key.strip()
                     value = value.strip()
-                    print(f"export TF_VAR_{key}='{value}'")  # Output the export command
+                    print(f"TF_VAR_{key}='{value}'")  # Output the export command
 
     # Mark the file as processed in the status file
     if args.mark_as_run:
