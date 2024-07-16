@@ -1,3 +1,4 @@
 {
-  "test2.env": "run"
+  "test2.env": "run",
+  "test1.env": "run"
 }
