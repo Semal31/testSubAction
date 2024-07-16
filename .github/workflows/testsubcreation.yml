@@ -77,6 +77,6 @@ jobs:
         run: |
           git config --local user.email "semal31@goutlook.com"
           git config --local user.name "Semal31"
-          git add env_runs.json  # Update this to the path of the file that tracks processing status
-          git commit -m "Update env_runs json" || echo "No changes to commit"
+          git add env_runs.json
+          git commit -m "Update env_runs json"
           git push
