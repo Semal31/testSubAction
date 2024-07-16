@@ -54,12 +54,12 @@ jobs:
       
       - name: Terraform Init and Apply (pre)
         run: |
-          terraform -chdir=./testSubAction-Code/pre init -backend-config="key=SubscriptionCreation/${{ env.TF_VAR_resource_group_name }}/pre/terraform.tfstate"
+          terraform -chdir=./testSubAction-Code/pre init -backend-config="key=SubscriptionCreation/${{ env.TF_VAR_subscription_name }}/pre/terraform.tfstate"
           terraform -chdir=./testSubAction-Code/pre apply -auto-approve
       
       - name: Terraform Init and Apply (post)
         run: |
-          terraform -chdir=./testSubAction-Code/post init -backend-config="key=SubscriptionCreation/${{ env.TF_VAR_resource_group_name }}/post/terraform.tfstate"
+          terraform -chdir=./testSubAction-Code/post init -backend-config="key=SubscriptionCreation/${{ env.TF_VAR_subscription_name }}/post/terraform.tfstate"
           terraform -chdir=./testSubAction-Code/post apply -auto-approve
       
       - name: Mark env file as processed
