@@ -29,10 +29,12 @@ jobs:
           done < exports.sh
           rm exports.sh
 
-      - name: Set up Terraform environment variables for AD_GROUP_ID and AD_GROUP_SECRET
+      - name: Set up Terraform environment variables for AD_GROUP_ID, AD_GROUP_SECRET, BILLING_ACCOUNT_NAME, and ENROLLMENT_ACCOUNT_NAME
         run: |
           echo "TF_VAR_ad_group_id=${{ secrets.AD_GROUP_ID }}" >> $GITHUB_ENV
           echo "TF_VAR_ad_group_secret=${{ secrets.AD_GROUP_SECRET }}" >> $GITHUB_ENV
+          echo "TF_VAR_billing_account_name=${{ secrets.BILLING_ACCOUNT_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_enrollment_account_name=${{ secrets.ENROLLMENT_ACCOUNT_NAME }}" >> $GITHUB_ENV
 
       - name: Azure Login
         uses: azure/login@v2
