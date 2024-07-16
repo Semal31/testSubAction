@@ -18,17 +18,22 @@ jobs:
         with:
           python-version: '3.x'
       
-      - name: Execute Python script and capture outputs
+      - name: Execute Python script and capture outputs for Terraform environment variables
         run: |
           python ./output_exports.py > exports.sh
       
-      - name: Source exports workaround
+      - name: Set the environment variables from the Python script output
         run: |
           while read line; do
             echo "$line" >> $GITHUB_ENV
           done < exports.sh
           rm exports.sh
-      
+
+      - name: Set up Terraform environment variables for AD_GROUP_ID and AD_GROUP_SECRET
+        run: |
+          echo "TF_VAR_ad_group_id=${{ secrets.AD_GROUP_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_ad_group_secret=${{ secrets.AD_GROUP_SECRET }}" >> $GITHUB_ENV
+
       - name: Azure Login
         uses: azure/login@v2
         with:
