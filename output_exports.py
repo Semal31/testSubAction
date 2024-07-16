@@ -28,7 +28,7 @@ def main():
 
     if not env_name:
         print("No unprocessed .env files found.")
-        sys.exit(0)
+        sys.exit(1)
 
     env_file_path = os.path.join(env_dir, env_name)
 
